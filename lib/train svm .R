@@ -5,18 +5,19 @@ library(data.table)
 # trainblabel <- labels of training dada
 # testx <- the test data set
 #################################################################################
-trainx <- read.table("featrues3.txt")
-trainx1 <- trainx[1:8,]
-testx <- trainx[9:12,]
-label <- as.data.frame(read.table("featrues3_name.txt"))
+trainx<-read.table("~/Downloads/featrues2.txt")
+trainx1 <- subset(trainx[1:1000,],select=-V1)
+testx <- trainx[1001:2000,]
+label <- as.data.frame(read.table("label.txt"))
 trainlabel <- as.matrix(label)
 trainblabel <- t(trainlabel)
-traindata <- cbind(trainx,trainblabel)
+trainlabel1<-trainlabel[1:1000,2]
+traindata <- cbind(trainlabel1,trainx1)
 #################################################################################
-# obj <- Cross-validate the margin parameter, k=4
+# obj <- Cross-validate the margin parameter, k=10
 # obj2 <- cross-validate both the soft-margin parameter and the kernel bandwidth
 #################################################################################
-obj <- tune.svm(trainblabel ~., data = traindata, cost = seq(0.01,0.1,by=0.005),type="C-classification", kernel = "linear",cross=4)
+obj <- tune.svm(trainlabel1 ~., data = traindata, cost = seq(0.1,10,by=0.5),type="C-classification", kernel = "linear",sampling="cross",cross=10)
 summary(obj)
 plot(obj)
 obj2 <- tune.svm(label ~.,data = tunetraindata,cost = seq(0.1,0.7,by=0.1),gamma = seq(0.01,0.02,by=0.005),type="C-classification", kernel="radial",sampling="cross",cross=5)
@@ -33,6 +34,7 @@ pred1 <- predict(linearmodel, testx)
 pred1
 pred2 <- predict(nonlinearmodel, testx)
 pred2
+
 
 
 
