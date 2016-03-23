@@ -1,13 +1,17 @@
-source("~/Desktop/cycle3cvd-team4/lib/train_s.R")
-source("~/Desktop/cycle3cvd-team4//lib/test_s.R")
+source("~/Desktop/train_s.R")
+source("~/Desktop/test_s.R")
 
-load('/Users/sunxiaohan/feature_eval.RData')
-load('/Users/sunxiaohan/label_eval.Rdata')
+load('~/feature_eval.RData')
+load('~/Desktop/cycle3cvd-team4/data/label_eval.RData')
+
+ind=sample(1:7378,2000)
+feature_eval=joined[ind,]
+label_eval=feature_label[ind,2]
 
 n <- 2000
 n_rep <- 20
 K <- 5
-label_eval=label_eval[,2]
+
 ind_cat <- which(label_eval == 1) # 1000 cats
 ind_dog <- which(label_eval== 0) # 1000 dogs
 n_cat_fold <- n_dog_fold <- 200
@@ -33,12 +37,12 @@ for(r in 1:n_rep){
     ind_test <- which(CV_index == c)
     dat_train <- feature_eval[-ind_test,]
     label_train <- label_eval[-ind_test]
-    dat_test <- feature_eval[1:405,]
-    label_test <- label_eval[1:405]
+    dat_test <- feature_eval[ind_test,]
+    label_test <- label_eval[ind_test]
     train_time[c,r] <- system.time(mod_train <- train(dat_train, label_train))[1]
     pred_test <- test(mod_train, dat_test)
-    CV_fit_baseline[1:405, r] <- pred_test$baseline
-    CV_fit_adv[1:405, r] <- pred_test$adv
+    CV_fit_baseline[ind_test, r] <- pred_test$baseline
+    CV_fit_adv[ind_test, r] <- pred_test$adv
   }
   CV_err_baseline[r] <- mean(CV_fit_baseline[,r] != label_eval)
   CV_err_adv[r] <- mean(CV_fit_adv[,r] != label_eval)
