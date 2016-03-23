@@ -1,12 +1,23 @@
-source("~/Desktop/train_s.R")
-source("~/Desktop/test_s.R")
+source("~/Desktop/cycle3cvd-team4/lib/train_s.R")
+source("~/Desktop/cycle3cvd-team4/lib/test_s.R")
 
-load('~/feature_eval.RData')
+load('~/Desktop/cycle3cvd-team4/data/feature_eval.RData')
 load('~/Desktop/cycle3cvd-team4/data/label_eval.RData')
 
-ind=sample(1:7378,2000)
+########################################
+#####这一段code是我自己提取的2000张照片，正式script需要删掉
+##########################################
+cat=which(feature_label[,2] == 1)
+dog=which(feature_label[,2]== 0) 
+ind_a=sample(cat,1000)
+ind_b=sample(dog,1000)
+ind=c(ind_a,ind_b)
 feature_eval=joined[ind,]
+rownames(feature_eval) <- 1:nrow(feature_eval)
 label_eval=feature_label[ind,2]
+label_eval=label_eval
+
+##########################################
 
 n <- 2000
 n_rep <- 20
@@ -53,17 +64,7 @@ save(CV_fit_baseline, CV_fit_adv,  cv_err_baseline, cv_err_adv, train_time, file
 
 
 
-###########################
-ind=sample(1:2000,1500)
-dat_train=feature_eval[ind,]
-label_train=label_eval[ind,]
-#ind2=sample(1:200)
-dat_test=feature_eval[1:500,]
-lala=label_eval[1:500,2]
 
-system.time(mod_train <- train(dat_train, label_train))
-
-pred_test <- test(mod_train, dat_test)
 
 sum(lala!=pred_test$baseline)
 sum(lala!=pred_test$adv)
