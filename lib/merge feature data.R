@@ -5,7 +5,9 @@ data_bs=Initial[-1,]
 nr=dim(data_bs)[1]
 nc=dim(data_bs)[2]-1
 data_bs1=matrix(as.numeric(data_bs[,-1]),nrow=nr,ncol=nc)
-newdata<-cbind(data_bs[,1],data_bs1)
+data_bs2=matrix(as.character(data_bs[,1]))
+newdata<-cbind(data_bs2,data_bs1)
+
 
 
 #columns 2-4097  are features extracted from overfeat
