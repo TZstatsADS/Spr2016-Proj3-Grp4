@@ -18,7 +18,7 @@ source("./lib/train.R")
 source("./lib/test.R")
 source("./lib/extract_lable.R")
 
-dat_train
+dat_train<-read.table("")
 label_train <-extract_label(dat_train[,2])
 
 model<-tain(dat_train,label_train)
