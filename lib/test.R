@@ -1,26 +1,56 @@
-######################################################
-### Fit the classification model with testing data ###
-######################################################
+#########################################################
+### test a classification model with training images ###
+#########################################################
 
-### Author: Yuting Ma
+### Author: Team 4
 ### Project 3
 ### ADS Spring 2016
 
-test <- function(fit_train, dat_test){
+
+test <- function(fit_train,dat_test){
   
-  ### Fit the classfication model with testing data
+  ### test a baseline model and an advanced model
   
   ### Input: 
-  ###  - the fitted classification model using training data
-  ###  -  processed features from testing images 
-  ### Output: training model specification
-  
-  ### load libraries
-  library("gbm")
-  
-  pred <- predict(fit_train$fit, newdata=dat_test, 
-                  n.trees=fit_train$iter, type="response")
-  
-  return(as.numeric(pred> 0.5))
-}
+  ###  baseline and advanced model 
+  ###  test dataset
+  ### Output: prediction of test dataset
 
+#################################
+# prepare data for advanced model  
+################################# 
+  
+  test_adv <- dat_test[,2:4097]  
+  
+  
+  #test_baseline <- matrix(as.numeric(test_baseline),nrow=200,ncol=800)
+  #baseline <- predict(fit_train$fit_baseline, test_baseline)
+  #adv <- predict(fit_train$fit_adv, test_adv)
+  #names(test_baseline)=names(x)
+  
+
+  
+#################################
+#prepare data for baseline model
+#################################
+
+  test_baseline <- dat_test[,4098:4897]  
+ 
+  #test_baseline <- dat_test[]
+  #test_baseline <-as.matrix(test_baseline)[-1,-1]
+  nr=dim(test_baseline)[1]
+  nc=dim(test_baseline)[2]
+  test_baseline <-matrix(as.numeric(as.matrix(test_baseline)),nrow=nr,ncol=nc)
+
+  #test_baseline <-matrix(as.numeric(test_baseline),nrow=200,ncol=800)
+
+#########################
+#make predictions
+#########################
+  baseline <- predict(fit_train$fit_baseline, test_baseline)
+  adv <- predict(fit_train$fit_adv, test_adv)
+  base.result=as.numeric(baseline)-1
+  adv.result=as.numeric(adv)-1
+  
+  return(list(baseline=base.result,adv=adv.result))
+}
