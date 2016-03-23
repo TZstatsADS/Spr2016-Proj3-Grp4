@@ -7,64 +7,74 @@
 ### ADS Spring 2016
 
 ### Specify directories
-setwd("./proj3_sample")
+setwd("./cycle3cvd-team4")
 
-img_train_dir <- "./data/zipcode_train/"
-img_test_dir <- "./data/zipcode_test/"
+### Import training images class 
 
-### Import training images class labels
-label_train <- read.table("./data/zip_train_label.txt", header=F)
-label_train <- as.numeric(unlist(label_train) == "9")
 
-### Construct visual feature
-source("./lib/feature.R")
-
-tm_feature_train <- system.time(dat_train <- feature(img_train_dir, "img_zip_train"))
-tm_feature_test <- system.time(dat_test <- feature(img_test_dir, "img_zip_test"))
-save(dat_train, file="./output/feature_train.RData")
-save(dat_train, file="./output/feature_test.RData")
-
-### Train a classification model with training images
+###  feature
+source("./data/feature_eval.Rdata")
 source("./lib/train.R")
 source("./lib/test.R")
+source("./lib/extract_lable.R")
 
-### Model selection with cross-validation
-# Choosing between different values of interaction depth for GBM
-source("./lib/cross_validation.R")
-depth_values <- seq(3, 11, 2)
-err_cv <- array(dim=c(length(depth_values), 2))
-K <- 5  # number of CV folds
-for(k in 1:length(depth_values)){
-  cat("k=", k, "\n")
-  err_cv[k,] <- cv.function(dat_train, label_train, depth_values[k], K)
+dat_train
+label_train <-extract_label(dat_train[,2])
+
+model<-tain(dat_train,label_train)
+test<-test(fit_train,dat_test)
+
+
+
+
+
+
+
+
+source("./lib/test.R")
+
+n <- 2000
+n_rep <- 20
+K <- 5
+ind_cat <- which(eval_label == 1) # 1000 cats
+ind_dog <- which(eval_label == 0) # 1000 dogs
+n_cat_fold <- n_dog_fold <- 200
+
+CV_err_baseline <- rep(0, n_rep)
+CV_err_adv <- rep(0, n_rep)
+CV_fit_baseline <- array(dim=c(n, n_rep))
+CV_fit_adv <- array(dim=c(n, n_rep))
+train_time <- array(dim=c(K, n_rep))
+
+for(r in 1:n_rep){
+  set.seed(309+r)
+  assign_cat <- sample(rep(1:K, times=n_cat_fold))
+  set.seed(1310+r)
+  assign_dog <- sample(rep(1:K, times=n_dog_fold))
+  
+  CV_index <- rep(NA, n)
+  CV_index[ind_cat] <- assign_cat
+  CV_index[ind_dog] <- assign_dog
+  
+  for(c in 1:K){
+    cat("fold= ", c, "\n")
+    ind_test <- which(CV_index == c)
+    dat_train <- feature_eval[-ind_test,]
+    label_train <- label_eval[-ind_test]
+    dat_test <- feature_eval[ind_test,]
+    label_test <- label_eval[ind_test]
+    train_time[c,r] <- system.time(mod_train <- train(dat_train, label_train))[1]
+    pred_test <- test(mod_train, dat_test)
+    CV_fit_baseline[ind_test, r] <- pred_test$baseline
+    CV_fit_adv[ind_test, r] <- pred_test$adv
+  }
+  cv_err_baseline[r] <- mean(CV_fit_baseline[,r] != label_eval)
+  cv_err_adv[r] <- mean(CV_fit_adv[,r] != label_eval)
+  
 }
-save(err_cv, file="./output/err_cv.RData")
 
-# Visualize CV results
-pdf("./fig/cv_results.pdf", width=7, height=5)
-plot(depth_values, err_cv[,1], xlab="Interaction Depth", ylab="CV Error",
-     main="Cross Validation Error", type="n", ylim=c(0, 0.15))
-points(depth_values, err_cv[,1], col="blue", pch=16)
-lines(depth_values, err_cv[,1], col="blue")
-arrows(depth_values, err_cv[,1]-err_cv[,2],depth_values, err_cv[,1]+err_cv[,2], 
-      length=0.1, angle=90, code=3)
-dev.off()
+save(CV_fit_baseline, CV_fit_adv,  cv_err_baseline, cv_err_adv, train_time, file="CV_result.RData")
 
-# Choose the best parameter value
-depth_best <- depth_values[which.min(err_cv[,1])]
-par_best <- list(depth=depth_best)
 
-# train the model with the entire training set
-tm_train <- system.time(fit_train <- train(dat_train, label_train, par_best))
-save(fit_train, file="./output/fit_train.RData")
 
-### Make prediction 
-tm_test <- system.time(pred_test <- test(fit_train, dat_test))
-save(pred_test, file="./output/pred_test.RData")
-
-### Summarize Running Time
-cat("Time for constructing training features=", tm_feature_train[1], "s \n")
-cat("Time for constructing testing features=", tm_feature_test[1], "s \n")
-cat("Time for training model=", tm_train[1], "s \n")
-cat("Time for making prediction=", tm_test[1], "s \n")
 
