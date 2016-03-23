@@ -20,11 +20,18 @@ ttdata_b <- cbind(ttlabel_b,traintest_b)
 
 
 #Using to train linear SVM
-trainx1_b <- subset(trainx_b[1:7000,],select=-1)
-trainlabel1_b<-trainlabel_b[1:7000,2]
-traindata_b<- cbind(trainlabel1_b,trainx1_b)
-testx_b <- subset(trainx_b[7001:7377,],select=-1)
-testlabel_b<-trainlabel_b[7001:7377,2]
+set.seed(2)
+ind2=sample(1:dim(trainx_b)[1],7000)
+trainx1_b=trainx_b[ind2,]
+trainx1_b =matrix(as.numeric(trainx1_b ),nrow=7000,ncol=800)
+trainlabel1_b<-trainlabel_b[ind2,2]
+
+traindata_b<- cbind(as.data.frame(trainlabel1_b),as.data.frame(trainx1_b))
+testx_b=trainx_b[-ind2,]
+textx_b =matrix(as.numeric(testx_b),nrow=376,ncol=800)
+testlabel_b=trainlabel_b[-ind2,2]
+
+
 
 #################################################################################
 # obj_b <- Cross-validate the margin parameter, k=10
@@ -32,18 +39,21 @@ testlabel_b<-trainlabel_b[7001:7377,2]
 x=as.data.frame(traintest_b)
 y=as.data.frame(ttlabel_b)
 da1=cbind(y,x)
-obj_b <- tune.svm(ttlabel_b~.,data=da1,cost = seq(0.1,1,by=0.01),type="C-classification", kernel = "linear",sampling="cross",cross=10)
+
+se=seq(1,3,by=0.1)
+co1=10^se
+obj_b <- tune.svm(ttlabel_b~.,data=da1,cost = 0.1,type="C-classification", kernel = "linear",sampling="cross",cross=10)
 summary(obj_b)
 plot(obj_b)
 
 #################################################################################
 #Train linear SVM
 #################################################################################
-linearmodel_b <- svm(trainlabel1_b ~ .,data=traindata_b,type = "C-classification",  kernel = "linear",cost=0.00005)
-pred_b <- predict(linearmodel_b, testx_b)
+linearmodel_b <- svm(trainlabel1_b ~ .,data=traindata_b,type = "C-classification",  kernel = "linear",cost=0.1)
+pred_b <- predict(linearmodel_b,textx_b)
 pred_b
-
-
+sum(pred_b!=testlabel_b)
+102/376
 
 
 
