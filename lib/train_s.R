@@ -54,7 +54,7 @@ train <- function(dat_train,label_train, par=NULL){
   #y=as.data.frame(ttlabel_b)
   #da1=cbind(y,x)
   
-  fit_baseline<-svm(label_base~ .,data=data_baseline,type = "C-classification",  kernel = "linear",cost=0.1)
+  fit_baseline<-svm(label_base~.,data=data_baseline,type = "C-classification",  kernel = "linear",cost=0.1)
   
   
   return(list(fit_baseline,fit_adv))

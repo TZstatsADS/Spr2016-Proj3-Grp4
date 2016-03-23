@@ -19,20 +19,17 @@ test <- function(fit_train,dat_test){
 ####################
 #advanced  
 #####################  
-   test_adv <- dat_test[,1:4097]  
 
-    
-  
+   test_adv <- dat_test[,2:4097]  
+
 
   #test_baseline <- matrix(as.numeric(test_baseline),nrow=200,ncol=800)
-  
-
   #baseline <- predict(fit_train$fit_baseline, test_baseline)
   #adv <- predict(fit_train$fit_adv, test_adv)
-  
   #names(test_baseline)=names(x)
+  
   baseline <- predict(fit_baseline, test_baseline)
   adv <- predict(fit_adv, test_adv)
   
-  return(list(baseline,adv))
+  return(list(baseline=baseline,adv=adv))
 }
