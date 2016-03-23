@@ -1,5 +1,7 @@
-source("~/Desktop/cycle3cvd-team4/lib/train_s.R")
-source("~/Desktop/cycle3cvd-team4/lib/test_s.R")
+source("/Users/yiliu/Desktop/cycle3cvd-team4/lib/test_s.R")
+source("/Users/yiliu/Desktop/cycle3cvd-team4/lib/train_s.R")
+
+#/Users/yiliu/Desktop/cycle3cvd-team4/lib/test_s.R
 
 load('~/Desktop/cycle3cvd-team4/data/feature_eval.RData')
 load('~/Desktop/cycle3cvd-team4/data/label_eval.RData')
@@ -64,7 +66,3 @@ save(CV_fit_baseline, CV_fit_adv,  cv_err_baseline, cv_err_adv, train_time, file
 
 
 
-
-
-sum(lala!=pred_test$baseline)
-sum(lala!=pred_test$adv)

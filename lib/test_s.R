@@ -47,8 +47,8 @@ test <- function(fit_train,dat_test){
 #########################
 #make predictions
 #########################
-  baseline <- predict(fit_baseline, test_baseline)
-  adv <- predict(fit_adv, test_adv)
+  baseline <- predict(fit_train$fit_baseline, test_baseline)
+  adv <- predict(fit_train$fit_adv, test_adv)
   base.result=as.numeric(baseline)-1
   adv.result=as.numeric(adv)-1
   

@@ -59,7 +59,7 @@ train <- function(dat_train,label_train, par=NULL){
   fit_baseline<-svm(label_base~.,data=data_baseline,type = "C-classification",  kernel = "linear",cost=0.1)
   
   
-  return(list(fit_baseline,fit_adv))
+  return(list(fit_baseline=fit_baseline,fit_adv=fit_adv))
   
   
   
