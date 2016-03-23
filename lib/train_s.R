@@ -23,7 +23,7 @@ train <- function(dat_train,label_train, par=NULL){
   library(e1071)
   #advanced
   train_adv<-dat_train[,2:4097]
-  label_adv<- label_train[,2]
+  label_adv<- label_train
   #train_adv_matrix<- as.matrix(label_adv)
   
   #train_adv_1=subset(train_adv,select=-V1)
@@ -39,7 +39,7 @@ train <- function(dat_train,label_train, par=NULL){
   train_base=dat_train[,4098:4897]
   
   #trainx_b<-as.matrix(trainb)[-1,-1]
-  label_base <- label_train[,2]
+  label_base <- label_train
   #trainlabel_b <- as.matrix(trainlabel_b)[-1,]
   
   nr=dim(train_base)[1]
