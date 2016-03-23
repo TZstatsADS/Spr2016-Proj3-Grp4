@@ -1,4 +1,5 @@
-dir_names<- train_data$V1
+extract_lable<-function(dir_names){
+
 breed_name <- rep(NA, length(dir_names))
 
 for(i in 1:length(dir_names)){
@@ -11,9 +12,13 @@ cat_breed <- c("Abyssinian", "Bengal", "Birman", "Bombay", "British_Shorthair", 
 
 iscat <- breed_name %in% cat_breed
 label <- as.numeric(iscat)
-train_label<-cbind(dir_names,label)
-train_label<-as.data.frame(train_label)
+train_label<-as.data.frame(label)
 
-write.table(train_label,file="label.txt",row.names = F, quote = F)
+# write.table(train_label,file="label.txt",row.names = F, quote = F)
+# 
+# label<- read.table("label.txt")
 
-label<- read.table("label.txt")
+return(train_label)
+
+}
+
