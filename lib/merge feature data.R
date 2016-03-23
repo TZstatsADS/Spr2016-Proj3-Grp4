@@ -5,3 +5,8 @@ data_bs=Initial
 #column 4099-4898 are features extracted from colorhistogram
 joined = cbind(data_adv[match(data_bs[,1], data_adv$V1),], data_bs)[-1,]
 save(joined,file = "feature_eval.RData")
+
+#better one
+baseline=as.data.frame(data_bs[-1,])
+joined=merge(data_adv,baseline,by="V1")
+save(joined,file = "feature_eval.RData")
