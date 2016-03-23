@@ -1,23 +1,22 @@
-source("/Users/yiliu/Desktop/cycle3cvd-team4/lib/test_s.R")
-source("/Users/yiliu/Desktop/cycle3cvd-team4/lib/train_s.R")
+source("./lib/test_s.R")
+source("./lib/train_s.R")
 
 #/Users/yiliu/Desktop/cycle3cvd-team4/lib/test_s.R
 
-load('~/Desktop/cycle3cvd-team4/data/feature_eval.RData')
-load('~/Desktop/cycle3cvd-team4/data/label_eval.RData')
+load('C:/ADS/feature_eval.RData')
+load('./data/label_eval.RData')
 
 ########################################
-#####这一段code是我自己提取的2000张照片，正式script需要删掉
+#####这一段code是我自己提取�?2000张照片，正式script需要删�?
 ##########################################
-cat=which(feature_label[,2] == 1)
-dog=which(feature_label[,2]== 0) 
+cat=which(label_eval[,2] == 1)
+dog=which(label_eval[,2]== 0) 
 ind_a=sample(cat,1000)
 ind_b=sample(dog,1000)
 ind=c(ind_a,ind_b)
-feature_eval=joined[ind,]
+feature_eval=feature_eval[ind,]
 rownames(feature_eval) <- 1:nrow(feature_eval)
-label_eval=feature_label[ind,2]
-label_eval=label_eval
+label_eval=label_eval[ind,2]
 
 ##########################################
 
