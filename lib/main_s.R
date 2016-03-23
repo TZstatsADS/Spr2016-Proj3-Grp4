@@ -20,7 +20,7 @@ label_eval=label_eval
 ##########################################
 
 n <- 2000
-n_rep <- 20
+n_rep <- 2
 K <- 5
 
 ind_cat <- which(label_eval == 1) # 1000 cats
@@ -60,11 +60,9 @@ for(r in 1:n_rep){
   
 }
 
-save(CV_fit_baseline, CV_fit_adv,  cv_err_baseline, cv_err_adv, train_time, file="CV_result.RData")
+save(CV_fit_baseline, CV_fit_adv,  CV_err_baseline, CV_err_adv, train_time, file="CV_result.RData")
 
 
 
 
 
-sum(lala!=pred_test$baseline)
-sum(lala!=pred_test$adv)
